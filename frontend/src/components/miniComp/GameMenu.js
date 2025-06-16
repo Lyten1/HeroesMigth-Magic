@@ -5,12 +5,12 @@ import "./GameMenu.css";
 
 
 
-function GameMenu({ onGameStatusChange }) {
+function GameMenu({ onGameStatusChange, users }) {
     const navigate = useNavigate();
 
     const handleNewGameClick = async () => {
-        const { data: token } = await createEntities();
-        onGameStatusChange(token, "playing");
+        const { data: token } = await createEntities(users.player1.login, users.player2.login);
+        onGameStatusChange(token, "prepare");
     };
 
     const handleReviewClick = async () => {
@@ -30,6 +30,7 @@ function GameMenu({ onGameStatusChange }) {
         <div>
             <div class="menu-container">
                 <button class="menu-button play-butt" onClick={handleNewGameClick}></button>
+                <button class="menu-button tavern-butt" ></button>
                 <button class="menu-button score-butt" onClick={handleScoreClick}></button>
                 <button class="menu-button review-butt" onClick={handleReviewClick}></button>
                 <button class="menu-button help-butt" ></button>

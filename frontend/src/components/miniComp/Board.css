@@ -1,16 +1,20 @@
 .container {
 
-    background-image: url("../../../public/images/CmBkGrMt.png");
+    background-image: url("../../../public/images/grove.png");
+    /* snow,
+    swamp,
+    fallout,
+    grove */
+
+
     /* background-position: center; */
     background-repeat: no-repeat;
     background-size: cover;
     border: 10px solid rgb(146, 175, 166);
-    min-width: 1170px;
-    width: 1170px;
-    max-width: 1170px;
-    margin: 30px 100px;
-
-
+    min-width: 1320px;
+    width: 1320px;
+    max-width: 1320px;
+    margin: 10px 100px 40px 100px;
     color: #a9aaab;
 }
 

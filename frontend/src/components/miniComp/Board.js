@@ -6,13 +6,16 @@ import Unit from "./Unit.js";
 import { addScore } from '../../_api/score.service';
 
 
-function Board({ users, token, onGameStatusChange }) {
+function Board({ users, token, onGameStatusChange, gameReady, teamPreparing }) {
 
     const [grid, setGrid] = useState(Array(8).fill().map(() => Array(16).fill("")));
     const [potentialSteps, setPotentialSteps] = useState([]);
     const [actualUnit, setActualUnit] = useState(null);
     const [moved, setMoved] = useState(0);
-    const cellSize = [70.31, 66.15];
+    const cellSize = [79.69, 67.15];
+
+
+
 
 
     const cellStyle = {
@@ -26,11 +29,12 @@ function Board({ users, token, onGameStatusChange }) {
         maxHeight: `${cellSize[1]}px`
     };
 
-    useEffect(() => {
 
+    useEffect(() => {
         fetchData();
         gameStatus();
     }, [moved]);
+
 
 
 
@@ -79,7 +83,6 @@ function Board({ users, token, onGameStatusChange }) {
                 setGrid(newGrid);
             }, 0);
 
-            // console.log("newDrid", newGrid);
         });
     }
 
@@ -122,6 +125,7 @@ function Board({ users, token, onGameStatusChange }) {
             // Calculate the relative distances
             const deltaX = cellIndex - actualUnit.x;
             const deltaY = rowIndex - actualUnit.y;
+
 
 
 
@@ -177,6 +181,9 @@ function Board({ users, token, onGameStatusChange }) {
                                     const isInRange = potentialSteps.some(coordinate =>
                                         coordinate.x === cellIndex && coordinate.y === rowIndex
                                     );
+
+
+
                                     let actualCell = false;
                                     if (actualUnit !== null) {
                                         if (actualUnit.y === rowIndex && actualUnit.x === cellIndex) {
@@ -192,6 +199,7 @@ function Board({ users, token, onGameStatusChange }) {
                                         cellClass = 'actualTile';
                                     else
                                         cellClass = 'without-border';
+
 
 
 

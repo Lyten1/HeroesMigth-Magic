@@ -5,6 +5,7 @@ import lombok.Setter;
 import sk.tuke.gamestudio.game.core.units.UnitTeam;
 import jakarta.persistence.*;
 
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -26,6 +27,10 @@ public class Player {
     @Column(name = "money")
     private int money;
 
+    @Column(name = "unitsString")
+    private String unitsString;
+
+
     @Transient
     private UnitTeam playerActualTeam;
 
@@ -39,7 +44,11 @@ public class Player {
         this.login = login;
         this.password = password;
         this.money = money;
+        this.unitsString = "Archer:0-Cavalier:0-Pikeman:0-Angel:0-Griffin:0-Monk:0-Swordsman:0";
     }
+
+
+
 
 
     public UnitTeam getPlayerActualTeam() {

@@ -10,14 +10,18 @@ import sk.tuke.gamestudio.entities.GameSession;
 import sk.tuke.gamestudio.game.core.Coordinates;
 import sk.tuke.gamestudio.game.core.Field;
 import sk.tuke.gamestudio.game.core.Tile;
+import sk.tuke.gamestudio.game.core.UnitStringTranslator;
 import sk.tuke.gamestudio.game.core.units.Unit;
 import sk.tuke.gamestudio.game.core.units.UnitBuilder;
 import sk.tuke.gamestudio.game.core.units.UnitClass;
 import sk.tuke.gamestudio.game.core.units.UnitTeam;
+import sk.tuke.gamestudio.repos.PlayerRepo;
 import sk.tuke.gamestudio.services.GameService;
 import sk.tuke.gamestudio.services.UnitPropsService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 @RestController
@@ -30,21 +34,37 @@ public class GameRestController {
     @Autowired
     private UnitPropsService unitPropsService;
 
+    @Autowired
+    private PlayerRepo playerRepo;
 
     @Autowired
     private GameService gameService;
 
     @PostMapping("/createGame")
-    public ResponseEntity<String> createGame(){
+    public ResponseEntity<String> createGame(@RequestParam String login1, @RequestParam String login2){
 
         String token = gameService.createGameSession(); // Create and return a unique game session token
         GameSession session = gameService.getSession(token);
+
+        session.setPlayer_light(playerRepo.getByLogin(login1));
+        session.setPlayer_dark(playerRepo.getByLogin(login2));
+
+
         if(session.getField().getBoardEntities().isEmpty()) {
             session.getField().loadMap();
-            session.getField().loadLightTeam(unitPropsService);
-            session.getField().loadDarkTeam(unitPropsService);
-            fillQueue(token);
+//            session.getField().loadLightTeam(unitPropsService);
+//            session.getField().loadDarkTeam(unitPropsService);
+//            fillQueue(token);
         }
+
+        return ResponseEntity.ok(token);
+    }
+
+    @PostMapping("/addUnits")
+    public ResponseEntity<String> addUnits(@RequestParam String token, @RequestBody List<UnitDTO> unitDTOList){
+        GameSession session = gameService.getSession(token);
+
+
 
         return ResponseEntity.ok(token);
     }
@@ -179,6 +199,14 @@ public class GameRestController {
         }
     }
 
+
+
+    @GetMapping("/getPlayersUnits")
+    public String getPlayersUnits(@RequestParam String player) {
+        System.out.println(player);
+        System.out.println(playerRepo.getByLogin(player).getUnitsString());
+        return playerRepo.getByLogin(player).getUnitsString();
+    }
 
 
     private Unit parseUnitFromStringData(String data){

@@ -2,17 +2,16 @@ import { useState, useEffect } from 'react';
 import "./Board.css";
 
 const Unit = ({ entity, className, onClick, movingUnit, cellSize, cellStyle }) => {
-
     const [backgroundSize, setBackgroundSize] = useState('auto');
     const [wayOfSee, setWayOfSee] = useState('auto');
     const [imgSrc, setSrc] = useState('auto');
     const [currentFrame, setCurrentFrame] = useState(0);
+    const [direction, setDirection] = useState(1); // 1 for forward, -1 for backward
     const scale = 0.38;
 
     const name = entity.name;
 
-    const tdWidth = 115;
-    const tdHeight = 120;
+
 
     let spriteWidth = 0;
     let spriteHeight = 0;
@@ -22,34 +21,36 @@ const Unit = ({ entity, className, onClick, movingUnit, cellSize, cellStyle }) =
     let x = 0;
     let y = 0;
 
+    let slidewidth = 0;
+
     switch (entity.name) {
         case "Pikeman":
-            spriteWidth = 70; spriteHeight = 100; x = 0; y = 6;
-            frameCount = 8; frameRate = 200; // приклад значень для Pikeman
+            spriteWidth = 60; spriteHeight = 100; x = 0; y = 6;
+            frameCount = 8; frameRate = 150; slidewidth = 61;
             break;
         case "Archer":
-            spriteWidth = 70; spriteHeight = 90; x = 0; y = 0;
-            //frameCount = 6; frameRate = 120; // приклад значень для Archer
+            spriteWidth = 70; spriteHeight = 90; x = 320 * scale; y = 0;
+            frameCount = 6; frameRate = 150; slidewidth = 71;
             break;
         case "Angel":
             spriteWidth = 100; spriteHeight = 115; x = 0; y = 0;
-            //frameCount = 8; frameRate = 150; // приклад значень для Angel
+            frameCount = 5; frameRate = 550; slidewidth = 151;
             break;
         case "Cavalier":
             spriteWidth = 115; spriteHeight = 120; x = 0; y = 0;
-            //frameCount = 10; frameRate = 80; // приклад значень для Cavalier
+            frameCount = 5; frameRate = 250; slidewidth = 115;
             break;
         case "Griffin":
-            spriteWidth = 95; spriteHeight = 120; x = 25; y = 3;
-            //frameCount = 5; frameRate = 110; // приклад значень для Griffin
+            spriteWidth = 95; spriteHeight = 120; x = 62 * scale; y = 3;
+            frameCount = 6; frameRate = 250; slidewidth = 95;
             break;
         case "Monk":
             spriteWidth = 70; spriteHeight = 90; x = 0; y = 0;
-            //frameCount = 3; frameRate = 130; // приклад значень для Monk
+            frameCount = 7; frameRate = 250; slidewidth = 82;
             break;
         case "Swordsman":
-            spriteWidth = 60; spriteHeight = 90; x = 0; y = 10;
-            //frameCount = 4; frameRate = 100; // приклад значень для Swordsman
+            spriteWidth = 55; spriteHeight = 90; x = 1; y = 10;
+            frameCount = 9; frameRate = 250; slidewidth = 49;
             break;
         default:
             break;
@@ -57,7 +58,7 @@ const Unit = ({ entity, className, onClick, movingUnit, cellSize, cellStyle }) =
 
     if (entity.state === 'BLOCKED') {
         spriteWidth = 95; spriteHeight = 95; x = 0; y = 0;
-        frameCount = 1; frameRate = 100; // якщо заблоковано, не потрібно анімації
+        frameCount = 1; frameRate = 100;
     }
 
     useEffect(() => {
@@ -82,23 +83,38 @@ const Unit = ({ entity, className, onClick, movingUnit, cellSize, cellStyle }) =
     useEffect(() => {
         if (frameCount > 1) {
             const interval = setInterval(() => {
-                setCurrentFrame((prevFrame) => (prevFrame + 1) % frameCount);
+                setCurrentFrame((prevFrame) => {
+                    if (prevFrame === frameCount - 1 && direction === 1) {
+                        setDirection(-1);
+                        return prevFrame - 1;
+                    } else if (prevFrame === 0 && direction === -1) {
+                        setDirection(1);
+                        return prevFrame + 1;
+                    } else {
+                        return prevFrame + direction;
+                    }
+                });
             }, frameRate);
             return () => clearInterval(interval);
         }
-    }, [frameRate, frameCount]);
+    }, [frameRate, frameCount, direction]);
+
+
+
 
     const isMoving = movingUnit && movingUnit.x === entity.x && movingUnit.y === entity.y;
 
+
     const style = isMoving ? {
-        transform: `translate(${movingUnit.deltaX * (cellSize[1] + 4)}px, ${movingUnit.deltaY * cellSize[0]}px)`,
-        transition: 'transform 0.8s ease',
+        transform: `translate(${movingUnit.deltaX * cellSize[0]}px, ${movingUnit.deltaY * (cellSize[1])}px)`,
+        transition: 'transform 0.6s ease',
         padding: '0px',
     } : {
         padding: '0px',
     };
 
-    const frameX = x + (spriteWidth) * currentFrame;
+
+    const frameX = x + (slidewidth * currentFrame * scale);
 
     const sprBack = {
         margin: 'auto',
@@ -107,7 +123,7 @@ const Unit = ({ entity, className, onClick, movingUnit, cellSize, cellStyle }) =
         width: `${spriteWidth * scale}px`,
         height: `${spriteHeight * scale}px`,
         backgroundSize: backgroundSize,
-        // transform: wayOfSee,
+        transform: wayOfSee,
         transition: 'none'
     };
 

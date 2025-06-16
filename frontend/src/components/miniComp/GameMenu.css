@@ -6,17 +6,17 @@
     padding: 90px 31px 0px 29px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0px;
     width: 20%;
     margin: 140px auto;
     min-width: 320px;
-    height: 450px;
+    height: 460px;
     min-height: 450px;
 }
 
 .menu-button {
     margin-top: 2px;
-    padding: 20px 20px;
+    padding: 10px 10px;
     /* font-size: 16px; */
     color: white;
     background: transparent;
@@ -39,6 +39,15 @@
 
 .play-butt {
     background-image: url("../../../public/images/button_play.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 150%;
+    min-height: 58px;
+    min-width: 200px;
+}
+
+.tavern-butt {
+    background-image: url("../../../public/images/button_tavern.png");
     background-position: center;
     background-repeat: no-repeat;
     background-size: 100% 150%;
